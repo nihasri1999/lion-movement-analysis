@@ -19,3 +19,12 @@ An integrated movement ecology pipeline built in R to decode behavioral states u
 ## Core R Dependencies
 
 `tidyverse`, `amt`, `momentuHMM`, `sf`, `lubridate`, `grid`
+
+## Data Attribution & Acknowledgments
+
+The GPS tracking data used in this analysis was sourced from [Movebank](https://www.movebank.org/).
+
+* **Dataset / Study Title:** African Lion - Panthera Lion Central Kalahari Game Reserve
+* **Data Citation:** MacFarlane, Kevin, 2014, The Ecology and Management of Kalahari lions in a Conflict Area in Central Botswana, PhD, Australian National University
+* **Movebank ID / DOI:** (https://doi.org/10.25911/5d78d54c1a50c)
+* **License:** Shared under Creative Commons 1.0 Universal (CC0)
