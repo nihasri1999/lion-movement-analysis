@@ -21,19 +21,15 @@ df_hmm <- lion_resampled %>%
 hmm_prep <- prepData(df_hmm, type = "UTM", coordNames = c("x", "y"))
 
 # 4. Set Initial Parameters for 3 Behavioral States
-# State 1: Resting / Bedding (Short steps, high turning)
-# State 2: Localized Foraging / Stalking (Medium steps, moderate turning)
-# State 3: Directed Transit / Patrol (Long steps, straight direction)
+# Step Length Parameters (Gamma Distribution: 9 total parameters)
+mu0        <- c(10, 250, 1200)   # Initial means (meters per 30 mins)
+sigma0     <- c(15, 200, 800)    # Initial standard deviations
+zeromass0  <- c(0.30, 0.05, 0.01) # Zero-mass probabilities
+stepPar0   <- c(mu0, sigma0, zeromass0)
 
-# Step Length Parameters (Gamma Distribution: Mean and SD in meters)
-mu0    <- c(10, 250, 1200)   # Initial means (meters per 30 mins)
-sigma0 <- c(15, 200, 800)    # Initial standard deviations
-stepPar0 <- c(mu0, sigma0)
-
-# Turning Angle Parameters (von Mises Distribution: Mean angle and Concentration kappa)
-angleMean0 <- c(pi, 0, 0)    # pi = reversing direction, 0 = straight forward
-kappa0     <- c(0.1, 0.5, 1.8) # 0.1 = uniform/random angle, 1.8 = highly concentrated
-anglePar0  <- c(angleMean0, kappa0)
+# Turning Angle Parameters (von Mises Distribution: 3 concentration parameters)
+kappa0     <- c(0.1, 0.5, 1.8)   # State 1 (dispersed/random) -> State 3 (highly directional)
+anglePar0  <- kappa0
 
 # 5. Fit 3-State Hidden Markov Model
 m_hmm <- fitHMM(
@@ -43,9 +39,6 @@ m_hmm <- fitHMM(
   Par0 = list(step = stepPar0, angle = anglePar0),
   stateNames = c("Resting", "Localized", "Transit")
 )
-
-# Inspect model convergence and estimated state parameters
-print(m_hmm)
 
 # 6. Decode Most Likely State Sequence (Viterbi Algorithm)
 hmm_prep$decoded_state <- viterbi(m_hmm)
